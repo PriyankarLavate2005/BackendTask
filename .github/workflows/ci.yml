@@ -5,8 +5,18 @@ on:
     branches:
       - master
       - main
+
 env:
-    MONGO_URI: ${{ secrets.MONGO_URI }}
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  PORT: ${{ secrets.PORT }}
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+  EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+  EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+  EMAIL_USER: ${{ secrets.EMAIL_USER }}
+  EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+  OTP_EXPIRY_MINUTES: ${{ secrets.OTP_EXPIRY_MINUTES }}
 
 jobs:
   setting_up_nodejs:
@@ -21,19 +31,14 @@ jobs:
         with:
           node-version: "21"
         
-      - name: "check node version"
+      - name: "Check Node version"
         run: node --version
 
-      - name: "initialization of setting up environment"
-        run : npm init -y
-    
-      - name: "installing the pakcages"
-        run : npm install
-    
-      - name : "installing the Nodemon in vm"
-        run : npm install nodemon
+      - name: "Install dependencies"
+        run: npm install
 
-      - name : "start the server"
-        run: node server.js 
+      - name: "Install Nodemon in VM"
+        run: npm install nodemon
 
-
+      - name: "Start the server"
+        run: node server.js
