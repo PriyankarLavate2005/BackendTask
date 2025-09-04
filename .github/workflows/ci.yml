@@ -1,0 +1,37 @@
+name: "setting up Nodejs Environment"
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  setting_up_nodejs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "21"
+        
+      - name: "check node version"
+        run: node --version
+
+      - name: "initialization of setting up environment"
+        run : npm init -y
+    
+      - name: "installing the pakcages"
+        run : npm install
+    
+      - name : "installing the Nodemon"
+        run : npm install nodemon
+
+      - name : "start the server"
+        run: nodemon server.js 
+
+

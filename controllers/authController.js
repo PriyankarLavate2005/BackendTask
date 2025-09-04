@@ -25,7 +25,6 @@ const signup = async (req, res) => {
         message: 'User already exists with this email or phone'
       });
     }
-    
     // Create user
     const user = await User.create({
       name,
@@ -53,12 +52,10 @@ const signup = async (req, res) => {
     });
   }
 };
-
 // JWT Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
     console.log('=== LOGIN ATTEMPT STARTED ===');
     console.log('Email received:', email);
     console.log('Password received:', password ? '*** (hidden)' : 'undefined');
@@ -69,7 +66,7 @@ const login = async (req, res) => {
     console.log('User found in database:', user ? 'Yes' : 'No');
     
     if (!user) {
-      console.log('❌ LOGIN FAILED: No user found with email:', email);
+      console.log(' LOGIN FAILED: No user found with email:', email);
       return res.status(401).json({
         success: false,
         message: 'Incorrect email or password'
@@ -86,22 +83,19 @@ const login = async (req, res) => {
     console.log('Comparing passwords...');
     const isPasswordCorrect = await user.correctPassword(password, user.password);
     
-    console.log('Password comparison result:', isPasswordCorrect ? '✅ CORRECT' : '❌ INCORRECT');
+    console.log('Password comparison result:', isPasswordCorrect ? 'CORRECT' : 'INCORRECT');
     
     if (!isPasswordCorrect) {
-      console.log('❌ LOGIN FAILED: Password incorrect for user:', user.email);
+      console.log(' LOGIN FAILED: Password incorrect for user:', user.email);
       return res.status(401).json({
         success: false,
         message: 'Incorrect email or password'
       });
-    }
-    
+    }  
     // Generate token
-    const token = signToken(user._id);
-    
+    const token = signToken(user._id);    
     // Remove password from output
-    user.password = undefined;
-    
+    user.password = undefined;    
     console.log('✅ LOGIN SUCCESSFUL for user:', user.email);
     console.log('Token generated:', token);
     console.log('User data to return:', {
@@ -160,15 +154,13 @@ const sendOTP = async (req, res) => {
         success: false,
         message: 'Failed to send OTP email'
       });
-    }
-    
+    }    
     res.status(200).json({
       success: true,
       message: 'OTP sent successfully'
-    });
-    
+    });    
   } catch (error) {
-    console.error('❌ Send OTP error:', error);
+    console.error(' Send OTP error:', error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -179,17 +171,16 @@ const sendOTP = async (req, res) => {
 const verifyOTP = async (req, res) => {
   try {
     console.log('=== OTP VERIFICATION PROCESS STARTED ===');
-    console.log('Request body:', req.body);
-    
+    console.log('Request body:', req.body);    
     const { email, otp } = req.body;
     console.log('Email extracted:', email);
     console.log('OTP extracted:', otp);
     console.log('OTP length:', otp ? otp.length : 'undefined');
     console.log('OTP type:', typeof otp);
-
+    
     // Validate OTP format first
     if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
-      console.log('❌ OTP VALIDATION FAILED:');
+      console.log(' OTP VALIDATION FAILED:');
       console.log(' - OTP exists:', !!otp);
       console.log(' - OTP length:', otp ? otp.length : 0);
       console.log(' - OTP is all digits:', otp ? /^\d+$/.test(otp) : false);
@@ -204,8 +195,8 @@ const verifyOTP = async (req, res) => {
         }]
       });
     }
-
-    console.log('✅ OTP format validation passed');
+    
+    console.log(' OTP format validation passed');
     
     // Find user by email
     console.log('Looking for user with email:', email);
@@ -213,17 +204,17 @@ const verifyOTP = async (req, res) => {
     console.log('User found:', user ? `Yes (ID: ${user._id})` : 'No');
     
     if (!user) {
-      console.log('❌ No user found with email:', email);
+      console.log(' No user found with email:', email);
       return res.status(400).json({
         success: false,
         message: 'Invalid OTP request'
       });
     }
-
+    
     console.log('User OTP data:', user.otp);
     
     if (!user.otp || !user.otp.code) {
-      console.log('❌ User has no OTP data or OTP code');
+      console.log('User has no OTP data or OTP code');
       return res.status(400).json({
         success: false,
         message: 'Invalid OTP request'
@@ -237,15 +228,16 @@ const verifyOTP = async (req, res) => {
     const isExpired = isOTPExpired(user.otp.expiresAt);
     console.log('Is OTP expired:', isExpired);
     
-    if (isExpired) {
-      console.log('❌ OTP has expired');
+    if (isExpired) 
+      {
+      console.log('OTP has expired');
       return res.status(400).json({
         success: false,
         message: 'OTP has expired'
       });
     }
 
-    console.log('✅ OTP is not expired');
+    console.log('OTP is not expired');
     
     // Verify OTP
     console.log('Comparing OTPs:');
@@ -294,9 +286,9 @@ const verifyOTP = async (req, res) => {
     // Clear OTP after successful verification
     user.otp = undefined;
     await user.save();
-    console.log('✅ OTP cleared from user record');
+    console.log(' OTP cleared from user record');
     
-    console.log('✅ OTP verification completed successfully');
+    console.log('OTP verification completed successfully');
     console.log('=== OTP VERIFICATION PROCESS COMPLETED ===');
     
     res.status(200).json({
@@ -311,7 +303,7 @@ const verifyOTP = async (req, res) => {
     });
     
   } catch (error) {
-    console.log('❌ OTP VERIFICATION ERROR:');
+    console.log('OTP VERIFICATION ERROR:');
     console.log('Error message:', error.message);
     console.log('Error stack:', error.stack);
     

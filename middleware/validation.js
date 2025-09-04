@@ -10,7 +10,6 @@ const handleValidationErrors = (req, res, next) => {
   }
   next();
 };
-
 const validateUser = [
   body('name')
     .notEmpty()
