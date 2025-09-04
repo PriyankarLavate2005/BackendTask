@@ -30,7 +30,7 @@ jobs:
       - name: "installing the pakcages"
         run : npm install
     
-      - name : "installing the Nodemon"
+      - name : "installing the Nodemon in vm"
         run : npm install nodemon
 
       - name : "start the server"
